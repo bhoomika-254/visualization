@@ -19,7 +19,7 @@ def heatmap_timebased(selected_city,data_type):
     heatmap_data = []
 
     # Process based on selected data type
-    if data_type == "Satellite":
+    if data_type == "Satellite  Data":
         filtered_data = satellite_data[satellite_data['City'] == selected_city]
         heatmap_column = 'NO2'  # Assuming NO2 is available in satellite data
     else:
