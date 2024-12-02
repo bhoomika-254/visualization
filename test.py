@@ -4,131 +4,74 @@ import plotly.express as px
 import plotly.graph_objects as go
 import seaborn as sns
 import matplotlib.pyplot as plt
-from heatmap_module import create_heatmap
+from heatmaptime import heatmap_timebased
 from streamlit_folium import st_folium
-from streamlit_globe import streamlit_globe
+from globee import calling_globe
 import random
 import base64
 
+# Set page configuration
 st.set_page_config(layout="wide")
 
 # File paths
 GROUND_DATA_PATH = "ground_data2.csv"
-SATELLITE_DATA_PATH = "satellite_data2.csv"
+SATELLITE_DATA_PATH = "modified_satellite_data2.csv"
 
-# Load data
-data = pd.read_csv(GROUND_DATA_PATH)
-satellite_data = pd.read_csv(SATELLITE_DATA_PATH)
+# Load and clean data function
+def load_and_clean_data(data_path):
+    try:
+        # Load data
+        data = pd.read_csv(data_path)
 
-# Ensure correct data types
-data['Date'] = pd.to_datetime(data['Date'], format='%d-%m-%Y %H:%M', errors='coerce')
-for col in data.columns:
-    if col not in ['Date', 'City', 'Location', 'Latitude', 'Longitude']:
-        data[col] = pd.to_numeric(data[col], errors='coerce')
+        # Ensure 'Date' column is properly formatted
+        data['Date'] = pd.to_datetime(data['Date'], format='%d-%m-%Y %H:%M', errors='coerce')
 
-# Clean Latitude and Longitude columns
-data['Latitude'] = pd.to_numeric(data['Latitude'], errors='coerce')
-data['Longitude'] = pd.to_numeric(data['Longitude'], errors='coerce')
+        # Convert pollutant columns to numeric, except for non-numeric ones
+        for col in data.columns:
+            if col not in ['Date', 'City', 'Location', 'Latitude', 'Longitude']:
+                data[col] = pd.to_numeric(data[col], errors='coerce')
 
-# Remove rows with invalid Latitude/Longitude
-data = data.dropna(subset=['Latitude', 'Longitude'])
+        # Clean Latitude and Longitude columns
+        data['Latitude'] = pd.to_numeric(data['Latitude'], errors='coerce')
+        data['Longitude'] = pd.to_numeric(data['Longitude'], errors='coerce')
 
-st.title("Visualization Window")
+        # Remove rows with invalid Latitude/Longitude or Date
+        data = data.dropna(subset=['Latitude', 'Longitude', 'Date'])
+
+        return data
+    except Exception as e:
+        st.error(f"Error loading or cleaning data: {e}")
+        return pd.DataFrame()  # Return an empty DataFrame in case of error
+
+# Load both datasets (Ground and Satellite)
+ground_data = load_and_clean_data(GROUND_DATA_PATH)
+satellite_data = load_and_clean_data(SATELLITE_DATA_PATH)
 
 # Sidebar Filters
-city = st.selectbox('Select City', data['City'].unique(), key="city_select")
+st.title("Visualization Window")
+city = st.selectbox('Select City', ground_data['City'].unique(), key="city_select")
 data_type = st.radio("Select Type of Data for Visualization :", ['Ground Data', 'Satellite Data'], key="heatmap_data_type")
-locations = data[data['City'] == city]['Location'].unique().tolist()
-locations.append('Select All Locations')
-selected_locations = st.multiselect('Select Locations', locations, key="location_select")
-city_data = data[data['City'] == city]
-if 'Select All Locations' not in selected_locations:
-    city_data = city_data[city_data['Location'].isin(selected_locations)]
+
+# Filter city data based on user selection
+if data_type == 'Ground Data':
+    city_data = ground_data[ground_data['City'] == city]
+elif data_type == 'Satellite Data':
+    city_data = satellite_data[satellite_data['City'] == city]
+
+# Pollutants filter (automatically populate based on columns)
 pollutants = [col for col in city_data.columns if col not in ['Date', 'City', 'Location', 'Latitude', 'Longitude']]
 selected_pollutants = st.multiselect('Select Pollutants', pollutants, key="pollutant_select")
 
-col1, col2 = st.columns([2, 2])
-# Heatmap Display
+col1, col2 = st.columns([1, 1])
+
 with col1:
-    if data_type == 'Ground Data' and city_data is not None and not city_data.empty:
-        pollutant = 'NO2'  # Default pollutant for heatmap
-
-        # Debug center coordinates
-        center_lat = city_data['Latitude'].mean()
-        center_lon = city_data['Longitude'].mean()
-        st.subheader("NO2 Heatmap :")
-        if pd.notnull(center_lat) and pd.notnull(center_lon):
-            heatmap = create_heatmap(data_type, center_lat, center_lon, pollutant=pollutant)
-            st_folium(heatmap, width=700, height=500)
-        else:
-            st.error("Invalid coordinates for the selected city or locations.")
-
-    elif data_type == 'Satellite Data':
-        data_file = SATELLITE_DATA_PATH
-        pollutant = 'NO2'  # Default pollutant for heatmap
-    
-        st.subheader(f"Satellite Data Analysis for {city}")
-        # Debug center coordinates
-    
-        try:
-            # Compute center coordinates
-            center_lat = city_data['Latitude'].mean()
-            center_lon = city_data['Longitude'].mean()
-    
-            if pd.notnull(center_lat) and pd.notnull(center_lon):
-                st.subheader("NO2 Heatmap :")
-                heatmap = create_heatmap(data_type, center_lat, center_lon, pollutant=pollutant)
-                st_folium(heatmap, width=700, height=500)
-            else:
-                st.error("Invalid coordinates for the selected city or locations. Please check the data.")
-        except KeyError as e:
-            st.error(f"Missing required column in satellite data: {e}")
-        except Exception as e:
-            st.error(f"Unexpected error: {e}")
+    # Time-based Heatmap
+    heatmap_timebased(city,data_type)
 
 with col2:
     # Generate points data with random AQI values and unique colors
-    if selected_locations:
-        st.subheader("                                                                            ")
-        pointsData = [
-            {'lat': 28.7041, 'lng': 77.1025, 'size': 0.01, 'color': 'red'},  # Delhi
-            {'lat': 19.0760, 'lng': 72.8777, 'size': 0.01, 'color': 'blue'},  # Mumbai
-            {'lat': 13.0827, 'lng': 80.2707, 'size': 0.01, 'color': 'green'},  # Chennai
-            {'lat': 22.5726, 'lng': 88.3639, 'size': 0.01, 'color': 'orange'},  # Kolkata
-            {'lat': 12.9716, 'lng': 77.5946, 'size': 0.01, 'color': 'purple'},  # Bengaluru
-            {'lat': 17.3850, 'lng': 78.4867, 'size': 0.01, 'color': 'yellow'},  # Hyderabad
-            {'lat': 26.9124, 'lng': 75.7873, 'size': 0.01, 'color': 'pink'},  # Jaipur
-            {'lat': 21.1702, 'lng': 72.8311, 'size': 0.01, 'color': 'cyan'},  # Surat
-            {'lat': 18.5204, 'lng': 73.8567, 'size': 0.01, 'color': 'magenta'},  # Pune
-            {'lat': 23.0225, 'lng': 72.5714, 'size': 0.01, 'color': 'lime'},  # Ahmedabad
-            {'lat': 30.7333, 'lng': 76.7794, 'size': 0.01, 'color': 'teal'},  # Chandigarh
-            {'lat': 11.0168, 'lng': 76.9558, 'size': 0.01, 'color': 'gold'},  # Coimbatore
-            {'lat': 31.1048, 'lng': 77.1734, 'size': 0.01, 'color': 'brown'},  # Shimla
-            {'lat': 25.5941, 'lng': 85.1376, 'size': 0.01, 'color': 'olive'},  # Patna
-            {'lat': 19.9975, 'lng': 73.7898, 'size': 0.01, 'color': 'navy'},  # Nashik
-            {'lat': 22.3072, 'lng': 73.1812, 'size': 0.01, 'color': 'violet'},  # Vadodara
-            {'lat': 34.0837, 'lng': 74.7973, 'size': 0.01, 'color': 'coral'},  # Srinagar
-            {'lat': 15.3173, 'lng': 75.7139, 'size': 0.01, 'color': 'maroon'},  # Hampi
-            {'lat': 27.1767, 'lng': 78.0081, 'size': 0.01, 'color': 'crimson'},  # Agra
-            {'lat': 24.5854, 'lng': 73.7125, 'size': 0.01, 'color': 'indigo'}   # Udaipur
-        ]
-    
-        # Add labels with city name and AQI value
-        labelsData = [
-            {
-                'lat': location['lat'],
-                'lng': location['lng'],
-                'size': location['size'],
-                'color': location['color'],
-                'text': f"{name} (AQI: {location['size']:.2f})"
-            } for location, name in zip(pointsData, [
-                'Delhi', 'Mumbai', 'Chennai', 'Kolkata', 'Bengaluru', 'Hyderabad', 'Jaipur', 'Surat', 'Pune', 'Ahmedabad',
-                'Chandigarh', 'Coimbatore', 'Shimla', 'Patna', 'Nashik', 'Vadodara', 'Srinagar', 'Hampi', 'Agra', 'Udaipur'
-            ])
-        ]
-    
-        # Render the globe
-        streamlit_globe(pointsData=pointsData, labelsData=labelsData, daytime='day', width=800, height=600)
+    if data_type:
+        calling_globe()
 
 # -----------------------------------------------------------------      VISUALIZAATIONS      -------------------------------------------------------------------------------------------
 
@@ -148,7 +91,6 @@ if selected_pollutants:
                 lambda x: f"{x.day}{'th' if 11 <= x.day <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(x.day % 10, 'th')} {x.strftime('%b')}"
             )
 
-            # Sort data by date
             # Sort data by date
             city_data.sort_values('Date', inplace=True)
 
