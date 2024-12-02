@@ -5,8 +5,8 @@ import numpy as np
 
 # Define file paths for different data types
 DATA_TYPE_PATHS = {
-    "Ground Data": r"C:\Users\bhoom\OneDrive\Desktop\isro project\visualization-streamlit-i-tried\ground_data2.csv",
-    "Satellite Data": r"C:\Users\bhoom\OneDrive\Desktop\isro project\visualization-streamlit-i-tried\satellite_data2.csv",
+    "Ground Data": "ground_data2.csv",
+    "Satellite Data": "satellite_data2.csv",
     # Add more data types and their paths if needed
 }
 
