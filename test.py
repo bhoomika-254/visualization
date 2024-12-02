@@ -108,27 +108,27 @@ with col3:
             st.error("Invalid coordinates for the selected city or locations.")
 
     elif data_type == 'Satellite Data':
-    data_file = SATELLITE_DATA_PATH
-    pollutant = 'NO2'  # Default pollutant for heatmap
-
-    st.subheader(f"Satellite Data Analysis for {city}")
-    # Debug center coordinates
-
-    try:
-        # Compute center coordinates
-        center_lat = city_data['Latitude'].mean()
-        center_lon = city_data['Longitude'].mean()
-
-        if pd.notnull(center_lat) and pd.notnull(center_lon):
-            st.subheader("NO2 Heatmap :")
-            heatmap = create_heatmap(data_type, center_lat, center_lon, pollutant=pollutant)
-            st_folium(heatmap, width=700, height=500)
-        else:
-            st.error("Invalid coordinates for the selected city or locations. Please check the data.")
-    except KeyError as e:
-        st.error(f"Missing required column in satellite data: {e}")
-    except Exception as e:
-        st.error(f"Unexpected error: {e}")
+        data_file = SATELLITE_DATA_PATH
+        pollutant = 'NO2'  # Default pollutant for heatmap
+    
+        st.subheader(f"Satellite Data Analysis for {city}")
+        # Debug center coordinates
+    
+        try:
+            # Compute center coordinates
+            center_lat = city_data['Latitude'].mean()
+            center_lon = city_data['Longitude'].mean()
+    
+            if pd.notnull(center_lat) and pd.notnull(center_lon):
+                st.subheader("NO2 Heatmap :")
+                heatmap = create_heatmap(data_type, center_lat, center_lon, pollutant=pollutant)
+                st_folium(heatmap, width=700, height=500)
+            else:
+                st.error("Invalid coordinates for the selected city or locations. Please check the data.")
+        except KeyError as e:
+            st.error(f"Missing required column in satellite data: {e}")
+        except Exception as e:
+            st.error(f"Unexpected error: {e}")
 
 
 # -----------------------------------------------------------------      VISUALIZAATIONS      -------------------------------------------------------------------------------------------
