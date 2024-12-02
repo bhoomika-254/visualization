@@ -34,23 +34,61 @@ data['Longitude'] = pd.to_numeric(data['Longitude'], errors='coerce')
 data = data.dropna(subset=['Latitude', 'Longitude'])
 
 st.title("Visualization Window")
-col1, col2 = st.columns([1, 2])
 
 # Sidebar Filters
+city = st.selectbox('Select City', data['City'].unique(), key="city_select")
+data_type = st.radio("Select Type of Data for Visualization :", ['Ground Data', 'Satellite Data'], key="heatmap_data_type")
+locations = data[data['City'] == city]['Location'].unique().tolist()
+locations.append('Select All Locations')
+selected_locations = st.multiselect('Select Locations', locations, key="location_select")
+city_data = data[data['City'] == city]
+if 'Select All Locations' not in selected_locations:
+    city_data = city_data[city_data['Location'].isin(selected_locations)]
+pollutants = [col for col in city_data.columns if col not in ['Date', 'City', 'Location', 'Latitude', 'Longitude']]
+selected_pollutants = st.multiselect('Select Pollutants', pollutants, key="pollutant_select")
+
+col1, col2 = st.columns([2, 2])
+# Heatmap Display
 with col1:
-    city = st.selectbox('Select City', data['City'].unique(), key="city_select")
-    data_type = st.radio("Select Type of Data for Visualization :", ['Ground Data', 'Satellite Data'], key="heatmap_data_type")
-    locations = data[data['City'] == city]['Location'].unique().tolist()
-    locations.append('Select All Locations')
-    selected_locations = st.multiselect('Select Locations', locations, key="location_select")
-    city_data = data[data['City'] == city]
-    if 'Select All Locations' not in selected_locations:
-        city_data = city_data[city_data['Location'].isin(selected_locations)]
-    pollutants = [col for col in city_data.columns if col not in ['Date', 'City', 'Location', 'Latitude', 'Longitude']]
-    selected_pollutants = st.multiselect('Select Pollutants', pollutants, key="pollutant_select")
+    if data_type == 'Ground Data' and city_data is not None and not city_data.empty:
+        pollutant = 'NO2'  # Default pollutant for heatmap
+
+        # Debug center coordinates
+        center_lat = city_data['Latitude'].mean()
+        center_lon = city_data['Longitude'].mean()
+        st.subheader("NO2 Heatmap :")
+        if pd.notnull(center_lat) and pd.notnull(center_lon):
+            heatmap = create_heatmap(data_type, center_lat, center_lon, pollutant=pollutant)
+            st_folium(heatmap, width=700, height=500)
+        else:
+            st.error("Invalid coordinates for the selected city or locations.")
+
+    elif data_type == 'Satellite Data':
+        data_file = SATELLITE_DATA_PATH
+        pollutant = 'NO2'  # Default pollutant for heatmap
+    
+        st.subheader(f"Satellite Data Analysis for {city}")
+        # Debug center coordinates
+    
+        try:
+            # Compute center coordinates
+            center_lat = city_data['Latitude'].mean()
+            center_lon = city_data['Longitude'].mean()
+    
+            if pd.notnull(center_lat) and pd.notnull(center_lon):
+                st.subheader("NO2 Heatmap :")
+                heatmap = create_heatmap(data_type, center_lat, center_lon, pollutant=pollutant)
+                st_folium(heatmap, width=700, height=500)
+            else:
+                st.error("Invalid coordinates for the selected city or locations. Please check the data.")
+        except KeyError as e:
+            st.error(f"Missing required column in satellite data: {e}")
+        except Exception as e:
+            st.error(f"Unexpected error: {e}")
 
 with col2:
     # Generate points data with random AQI values and unique colors
+    st.subheader("                                                                            ")
     pointsData = [
         {'lat': 28.7041, 'lng': 77.1025, 'size': 0.01, 'color': 'red'},  # Delhi
         {'lat': 19.0760, 'lng': 72.8777, 'size': 0.01, 'color': 'blue'},  # Mumbai
@@ -91,51 +129,13 @@ with col2:
     # Render the globe
     streamlit_globe(pointsData=pointsData, labelsData=labelsData, daytime='day', width=800, height=600)
 
-col3, col4 = st.columns([1, 1])
-# Heatmap Display
-with col3:
-    if data_type == 'Ground Data' and city_data is not None and not city_data.empty:
-        pollutant = 'NO2'  # Default pollutant for heatmap
-
-        # Debug center coordinates
-        center_lat = city_data['Latitude'].mean()
-        center_lon = city_data['Longitude'].mean()
-        st.subheader("NO2 Heatmap :")
-        if pd.notnull(center_lat) and pd.notnull(center_lon):
-            heatmap = create_heatmap(data_type, center_lat, center_lon, pollutant=pollutant)
-            st_folium(heatmap, width=700, height=500)
-        else:
-            st.error("Invalid coordinates for the selected city or locations.")
-
-    elif data_type == 'Satellite Data':
-        data_file = SATELLITE_DATA_PATH
-        pollutant = 'NO2'  # Default pollutant for heatmap
-    
-        st.subheader(f"Satellite Data Analysis for {city}")
-        # Debug center coordinates
-    
-        try:
-            # Compute center coordinates
-            center_lat = city_data['Latitude'].mean()
-            center_lon = city_data['Longitude'].mean()
-    
-            if pd.notnull(center_lat) and pd.notnull(center_lon):
-                st.subheader("NO2 Heatmap :")
-                heatmap = create_heatmap(data_type, center_lat, center_lon, pollutant=pollutant)
-                st_folium(heatmap, width=700, height=500)
-            else:
-                st.error("Invalid coordinates for the selected city or locations. Please check the data.")
-        except KeyError as e:
-            st.error(f"Missing required column in satellite data: {e}")
-        except Exception as e:
-            st.error(f"Unexpected error: {e}")
-
-
 # -----------------------------------------------------------------      VISUALIZAATIONS      -------------------------------------------------------------------------------------------
+
+col3, col4 = st.columns([1, 1])
 
 # Air quality chart
 if selected_pollutants:
-    with col4:
+    with col3:
         st.subheader(f"Air Quality Analysis in {city} : ")
         if not city_data['Date'].isnull().all():
             year = city_data['Date'].dt.year.unique()[0]
@@ -299,7 +299,7 @@ if selected_pollutants:
 
 
     # Bar Chart
-    with col5:
+    with col4:
         st.subheader("Bar Chart: Over the Last 30 Days")
         recent_data = city_data.tail(30)
 
@@ -316,7 +316,7 @@ if selected_pollutants:
             st.plotly_chart(fig)
               
     # Pie Chart
-    with col6:
+    with col5:
         if len(selected_pollutants) > 1:
             st.subheader("Pie Chart: Pollutant Breakdown")
             pollutant_data = city_data[selected_pollutants].mean()
@@ -327,30 +327,31 @@ if selected_pollutants:
                     hole=0
             )
             st.plotly_chart(fig)
-        
-    st.subheader("Histogram: ")
-            # Group data by Date and calculate the mean NO2 per day
-    grouped_data = city_data.groupby('Date', as_index=False)['NO2'].mean()
+    
+    with col6:   
+        st.subheader("Histogram: ")
+                # Group data by Date and calculate the mean NO2 per day
+        grouped_data = city_data.groupby('Date', as_index=False)['NO2'].mean()
 
-            # Create the histogram
-    fig = px.histogram(
-                grouped_data,
-                x='Date',
-                y='NO2',
-                nbins=20,
-                title="Date vs NO2 Distribution",
-                color_discrete_sequence=['#7e3bec']  # Change color to purple
-    )
+                # Create the histogram
+        fig = px.histogram(
+                    grouped_data,
+                    x='Date',
+                    y='NO2',
+                    nbins=20,
+                    title="Date vs NO2 Distribution",
+                    color_discrete_sequence=['#7e3bec']  # Change color to purple
+        )
 
-            # Update layout for better aesthetics
-    fig.update_layout(
-                xaxis_title="Date",
-                yaxis_title="NO2 Concentration",
-                template="plotly_white",
-    )
+                # Update layout for better aesthetics
+        fig.update_layout(
+                    xaxis_title="Date",
+                    yaxis_title="NO2 Concentration",
+                    template="plotly_white",
+        )
 
-            # Render the histogram
-    st.plotly_chart(fig)
+                # Render the histogram
+        st.plotly_chart(fig)
 
     #3D Scatter Plot
     st.subheader("3D Scatter Plot:")
