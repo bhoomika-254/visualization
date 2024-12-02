@@ -13,8 +13,8 @@ import base64
 st.set_page_config(layout="wide")
 
 # File paths
-GROUND_DATA_PATH = r"C:\Users\bhoom\OneDrive\Desktop\isro project\visualization-streamlit-i-tried\ground_data2.csv"
-SATELLITE_DATA_PATH = r"C:\Users\bhoom\OneDrive\Desktop\isro project\visualization-streamlit-i-tried\satellite_data2.csv"
+GROUND_DATA_PATH = "ground_data2.csv"
+SATELLITE_DATA_PATH = "satellite_data2.csv"
 
 # Load data
 data = pd.read_csv(GROUND_DATA_PATH)
