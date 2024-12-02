@@ -66,11 +66,13 @@ col1, col2 = st.columns([1, 1])
 
 with col1:
     # Time-based Heatmap
+    st.subheader(f"NO2 Heatmap based on {data_type} : ")
     heatmap_timebased(city,data_type)
 
 with col2:
     # Generate points data with random AQI values and unique colors
     if data_type:
+        st.subheader("3D Visualization :")
         calling_globe()
 
 # -----------------------------------------------------------------      VISUALIZAATIONS      -------------------------------------------------------------------------------------------
