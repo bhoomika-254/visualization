@@ -14,22 +14,22 @@ st.set_page_config(layout="wide", page_title="Air Quality Dashboard", page_icon=
 st.sidebar.title("Navigation")
 # Sidebar for navigation using radio buttons
 page = st.sidebar.radio("Go to", [
-    "Visualization Window", 
+    "Visualization Hub", 
     "LSTM Window", 
     "API using Lat Long", 
     "Nearest Station Prediction",
     "Clustering Window",
     "Chat Bot",
-    "NO2 Visualization"
+    "NO2 Insights"
 ])
 
 # ---------------------------------------------------- linking pages ------------------------------------------------
 
-if page == "Visualization Window":
+if page == "Visualization Hub":
     visualization_window.show_page()
 elif page == "LSTM Window":
     lstm_window.show_page()
-elif page == "NO2 Visualization":
+elif page == "NO2 Insights":
     no2visualization.show_page()
 elif page == "Chat Bot":
     webbrowser.open("https://yaksha.streamlit.app/")
