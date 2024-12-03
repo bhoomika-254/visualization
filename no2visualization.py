@@ -2,7 +2,8 @@ import streamlit as st
 
 def show_page():
     # Title of the Streamlit app
-    st.title("Embedded Flask App in Streamlit")
+    st.title("NO2 Insights")
+    st.write("Embedded Flask App in Streamlit")
 
     # Instructions
     st.markdown("""
