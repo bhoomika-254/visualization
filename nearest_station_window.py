@@ -20,8 +20,27 @@ def show_page():
     df['modified'] = df['NO2'] * 1e6
     df.to_csv('only_hyderabad.csv', index=False)
 
+    # Set the page configuration
+    
+    st.image("headerimg2.png", use_container_width=True)
+
     # Title of the app
-    st.title("Interactive Map: Predict NO2 at Clicked Location")
+    st.title("Predict NO2 at Clicked Location")
+    
+    st.markdown(
+        """
+        <div style="
+            background-color: #f0f4fa; 
+            padding: 20px; 
+            border-radius: 5px; 
+            margin-bottom: 25px;">
+            <p style="text-align: center; color: #000000; font-size: 20px;">
+                ✨ This page provides an interactive way to predict NO2 values. Click on any region, and let the magic unfold 📊
+            </p>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
 
     # Define the stations
     stations = [
