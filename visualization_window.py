@@ -13,19 +13,6 @@ import base64
 
 def show_page():
     # Function to load and encode image as base64
-# --------------------------------------------------------------- BANNER --------------------------------------------------------
-    def get_base64_image(image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode("utf-8")
-
-    # Load the banner image
-    banner_image_base64 = get_base64_image('./banner.png')  # Adjust path to your image
-
-    st.markdown(f"""
-        <div style="text-align: center;">
-            <img src="data:image/png;base64,{banner_image_base64}" style="width: 100%; height: auto;">
-        </div>
-    """, unsafe_allow_html=True)
 # --------------------------------------------------------- data loading and cleaning ---------------------------------------------------
     GROUND_DATA_PATH = "ground_data2.csv"
     SATELLITE_DATA_PATH = "modified_satellite_data2.csv"
@@ -63,7 +50,24 @@ def show_page():
 # ------------------------------------------------------- User interaction ---------------------------------------------------------------------
 
     # Sidebar Filters
+    st.image("headerimg2.png", use_container_width=True)
+    
+    
     st.title("Data Visualization Hub")
+    st.markdown(
+        """
+        <div style="
+            background-color: #f0f4fa; 
+            padding: 20px; 
+            border-radius: 5px; 
+            margin-bottom: 25px;">
+            <p style="text-align: center; color: #000000; font-size: 20px;">
+                ✨ This page provides an interactive way to analyze air quality trends. Explore the data and uncover insights! 📊
+            </p>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
     
     city = st.selectbox('Select City', ground_data['City'].unique(), key="city_select")
     data_type = st.radio("Select Type of Data for Visualization :", ['Ground Data', 'Satellite Data'], key="heatmap_data_type")
@@ -161,4 +165,4 @@ def show_page():
                 histogram(ground_data_vizz)
 
             #3D Scatter Plot
-            scatter_plot(selected_pollutants,ground_data_vizz)
+            scatter_plot(selected_pollutants,city_data)
