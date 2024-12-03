@@ -15,11 +15,10 @@ st.sidebar.title("Navigation")
 # Sidebar for navigation using radio buttons
 page = st.sidebar.radio("Go to", [
     "Visualization Hub", 
-    "LSTM Window", 
+    "NO2 Forecasting-LSTM", 
     "API using Lat Long", 
-    "Nearest Station Prediction",
-    "Clustering Window",
-    "Chat Bot",
+    "Find Nearest Station",
+    "Air Quality Assistant",
     "NO2 Insights"
 ])
 
@@ -27,18 +26,16 @@ page = st.sidebar.radio("Go to", [
 
 if page == "Visualization Hub":
     visualization_window.show_page()
-elif page == "LSTM Window":
+elif page == "NO2 Forecasting-LSTM":
     lstm_window.show_page()
 elif page == "NO2 Insights":
     no2visualization.show_page()
-elif page == "Chat Bot":
+elif page == "Air Quality Assistant":
     webbrowser.open("https://yaksha.streamlit.app/")
 elif page == "API using Lat Long":
     map_api_window.show_page()
-elif page == "Nearest Station Prediction":
+elif page == "Find Nearest Station":
     nearest_station_window.show_page()
-elif page == "Clustering Window":
-    st.header("Clustering Window - ")
      
 # ------------------------------------------------------ background -------------------------------------------------------
 
