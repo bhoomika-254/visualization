@@ -39,4 +39,4 @@ def calling_globe():
             ]
 
             # Render the globe
-    streamlit_globe(pointsData=pointsData, labelsData=labelsData, daytime='day', width=800, height=600)
+    streamlit_globe(pointsData=pointsData, labelsData=labelsData, daytime='day', width=600, height=500)
