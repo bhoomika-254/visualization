@@ -3,6 +3,7 @@ import visualization_window
 import webbrowser
 import base64
 import map_api_window
+import no2visualization
 
 # Set page configuration (must be the first Streamlit command)
 st.set_page_config(layout="wide", page_title="Air Quality Dashboard", page_icon="🌍")
@@ -27,7 +28,7 @@ if page == "Visualization Window":
 elif page == "LSTM Window":
     webbrowser.open("https://air-quality-pavanai.streamlit.app/")
 elif page == "NO2 Visualization":
-    webbrowser.open("https://subhash.pythonanywhere.com/")
+    no2visualization.show_page()
 elif page == "Chat Bot":
     webbrowser.open("https://yaksha.streamlit.app/")
 elif page == "API using Lat Long":
