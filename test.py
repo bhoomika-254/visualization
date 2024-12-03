@@ -14,6 +14,24 @@ import base64
 # Set page configuration
 st.set_page_config(layout="wide")
 
+# --------------------------------------------------------------- BANNER --------------------------------------------------------
+
+# Function to load and encode image as base64
+def get_base64_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
+    
+# Load the banner image
+banner_image_base64 = get_base64_image('./banner.png')  # Adjusted path for the image
+
+st.markdown(f"""
+    <div style="text-align: center;">
+        <img src="data:image/png;base64,{banner_image_base64}" style="width: 100%; height: auto;">
+    </div>
+""", unsafe_allow_html=True)
+
+# -------------------------------------------------------------- FILE HANDLING -----------------------------------------------------------
+
 # File paths
 GROUND_DATA_PATH = "ground_data2.csv"
 SATELLITE_DATA_PATH = "modified_satellite_data2.csv"
