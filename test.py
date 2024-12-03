@@ -5,6 +5,7 @@ import base64
 import map_api_window
 import no2visualization
 from air_quality_prediction import lstm_window
+import nearest_station_window
 
 # Set page configuration (must be the first Streamlit command)
 st.set_page_config(layout="wide", page_title="Air Quality Dashboard", page_icon="🌍")
@@ -35,10 +36,10 @@ elif page == "Chat Bot":
 elif page == "API using Lat Long":
     map_api_window.show_page()
 elif page == "Nearest Station Prediction":
-    st.header("Predicting the nearest station here - ")
+    nearest_station_window.show_page()
 elif page == "Clustering Window":
     st.header("Clustering Window - ")
-    
+     
 # ------------------------------------------------------ background -------------------------------------------------------
 
 # Function to load and encode image as base64
