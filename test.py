@@ -3,20 +3,57 @@ import visualization_window
 import webbrowser
 import base64
 import map_api_window
-import no2visualization
+import no2visualization_window
 from air_quality_prediction import lstm_window
 import nearest_station_window
+import home
 
 # Set page configuration (must be the first Streamlit command)
 st.set_page_config(layout="wide", page_title="Air Quality Dashboard", page_icon="🌍")
+
+st.markdown(
+    """
+    <style>
+        /* Sidebar styling */
+        [data-testid="stSidebar"] {
+            background: rgba(255, 255, 255, 0.1); /* Translucent white background */
+            backdrop-filter: blur(10px); /* Glass effect */
+            -webkit-backdrop-filter: blur(10px); /* Glass effect for Safari */
+            border-right: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+        }
+
+        /* Sidebar text styling */
+        [data-testid="stSidebar"] .css-1d391kg { 
+            color: #333; /* Dark text for readability */
+        }
+
+        /* Adjust scrollbar for sidebar */
+        [data-testid="stSidebar"]::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        [data-testid="stSidebar"]::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        /* Sidebar header text style */
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+            color: #FFFFFF; /* Soft blue for headings */
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Sidebar for navigation
 st.sidebar.title("Navigation")
 # Sidebar for navigation using radio buttons
 page = st.sidebar.radio("Go to", [
+    "Home",
     "Visualization Hub", 
     "Prediction Models", 
-    "API using Lat Long", 
+    "Latitude and Longitude", 
     "Find Nearest Station",
     "Air Quality Assistant",
     "NO2 Insights"
@@ -24,15 +61,17 @@ page = st.sidebar.radio("Go to", [
 
 # ---------------------------------------------------- linking pages ------------------------------------------------
 
-if page == "Visualization Hub":
+if page=="Home":
+    home.show_page()
+elif page == "Visualization Hub":
     visualization_window.show_page()
 elif page == "Prediction Models":
     lstm_window.show_page()
 elif page == "NO2 Insights":
-    no2visualization.show_page()
+    no2visualization_window.show_page()
 elif page == "Air Quality Assistant":
     webbrowser.open("https://yaksha.streamlit.app/")
-elif page == "API using Lat Long":
+elif page == "Latitude and Longitude":
     map_api_window.show_page()
 elif page == "Find Nearest Station":
     nearest_station_window.show_page()
