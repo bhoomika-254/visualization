@@ -63,7 +63,7 @@ def show_page():
 # ------------------------------------------------------- User interaction ---------------------------------------------------------------------
 
     # Sidebar Filters
-    st.title("Data Visualization Window")
+    st.title("Data Visualization Hub")
     city = st.selectbox('Select City', ground_data['City'].unique(), key="city_select")
     data_type = st.radio("Select Type of Data for Visualization :", ['Ground Data', 'Satellite Data'], key="heatmap_data_type")
 
