@@ -24,7 +24,9 @@ def show_page():
     kmeans_model = joblib.load(kmeans_model_path)
     model_urban = load_model(urban_model_path, custom_objects={"mse": MeanSquaredError()})
     model_rural = load_model(rural_model_path, custom_objects={"mse": MeanSquaredError()})
-
+    
+    st.image("headerimg2.png", use_container_width=True)
+    
     # Navbar CSS
     st.markdown(
         """
@@ -186,17 +188,26 @@ def show_page():
 
     # Page Rendering
     if st.session_state.page == "Interactive Map":
-        st.title("Interactive Air Quality Map")
+        st.title("Prediction Models")
         st.markdown(
-            """
-            ## Air Quality Prediction Using LSTM and Clustering
-
-            This tool shows how air quality is predicted and clustered using data from over 500 ground stations across India. 
-            By clicking on any point, you can view the **actual NO2 values** and the **predicted values** for that location.
-
-            The predictions are made using advanced machine learning techniques that help estimate future air quality levels based on current data.
-            """
-        )
+        """
+        <div style="
+            background-color: #f0f4fa; 
+            padding: 20px; 
+            border-radius: 5px; 
+            margin-bottom: 25px;">
+            <h3 style="text-align: center; color: #4A90E2;">
+                NO2 Forecasting using LSTM and Clustering
+            </h3>
+            <p style="text-align: center; color: #000000; font-size: 20px;">
+                📡 This tool shows how air quality is predicted and clustered using data from over 500 ground stations across India. 
+            By clicking on any point, you can view the *actual NO2 values* and the *predicted values* for that location.
+            The predictions are made using advanced machine learning techniques that help estimate future air quality levels based on current data. 📡
+            </p>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
         
         # Text description for the map
         st.markdown(
