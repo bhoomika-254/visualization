@@ -15,7 +15,7 @@ st.sidebar.title("Navigation")
 # Sidebar for navigation using radio buttons
 page = st.sidebar.radio("Go to", [
     "Visualization Hub", 
-    "NO2 Forecasting-LSTM", 
+    "Prediction Models", 
     "API using Lat Long", 
     "Find Nearest Station",
     "Air Quality Assistant",
@@ -26,7 +26,7 @@ page = st.sidebar.radio("Go to", [
 
 if page == "Visualization Hub":
     visualization_window.show_page()
-elif page == "NO2 Forecasting-LSTM":
+elif page == "Prediction Models":
     lstm_window.show_page()
 elif page == "NO2 Insights":
     no2visualization.show_page()
