@@ -83,7 +83,7 @@ elif data_type == 'Satellite Data':
 pollutants = [col for col in city_data.columns if col not in ['Date', 'City', 'Location', 'Latitude', 'Longitude']]
 selected_pollutants = st.multiselect('Select Pollutants', pollutants, key="pollutant_select")
 
-col1, col2 = st.columns([1, 1])
+col1, col2 = st.columns([2, 1.4])
 
 with col1:
     # Time-based Heatmap
