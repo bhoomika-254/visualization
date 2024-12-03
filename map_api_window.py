@@ -11,7 +11,24 @@ from datetime import datetime
 def show_page():
     # Set the page configuration
     # Title of the app
+    st.image("headerimg2.png", use_container_width=True)
+    
     st.title("Interactive Air Quality Dashboard")
+    
+    st.markdown(
+        """
+        <div style="
+            background-color: #f0f4fa; 
+            padding: 20px; 
+            border-radius: 5px; 
+            margin-bottom: 25px;">
+            <p style="text-align: center; color: #000000; font-size: 20px;">
+                  🌱 Click anywhere on the map to instantly retrieve Latitude and Longitude values. Give it a try and explore the world in coordinates! 🌱 
+            </p>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
 
     # Initialize the map
     center = [20.5937, 78.9629]  # Default center is India
