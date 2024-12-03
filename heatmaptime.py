@@ -5,6 +5,7 @@ import pandas as pd
 
 # Load your data
 def heatmap_timebased(selected_city,data_type):
+    st.subheader(f"NO2 Heatmap for {data_type} of {selected_city}")
     satellite_data = pd.read_csv('modified_satellite_data2.csv')
     ground_data = pd.read_csv('ground_data2.csv')
 
