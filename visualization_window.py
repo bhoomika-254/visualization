@@ -64,6 +64,7 @@ def show_page():
 
     # Sidebar Filters
     st.title("Data Visualization Hub")
+    
     city = st.selectbox('Select City', ground_data['City'].unique(), key="city_select")
     data_type = st.radio("Select Type of Data for Visualization :", ['Ground Data', 'Satellite Data'], key="heatmap_data_type")
 
@@ -160,4 +161,4 @@ def show_page():
                 histogram(ground_data_vizz)
 
             #3D Scatter Plot
-            scatter_plot(selected_pollutants,city_data)
+            scatter_plot(selected_pollutants,ground_data_vizz)
