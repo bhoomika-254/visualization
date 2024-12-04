@@ -22,7 +22,7 @@ def show_page():
 
     # Set the page configuration
     
-    st.image("headerimg2.png", use_container_width=True)
+    st.image("banner.png", use_container_width=True)
 
     # Title of the app
     st.title("Predict NO2 at Clicked Location")
