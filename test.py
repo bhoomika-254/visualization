@@ -4,10 +4,10 @@ import webbrowser
 import base64
 import map_api_window
 import no2visualization_window
-from air_quality_prediction import lstm_window
+from air_quality_prediction import lstm_windoww
 import nearest_station_window
-import home
-
+import home 
+import ndvi_window
 # Set page configuration (must be the first Streamlit command)
 st.set_page_config(layout="wide", page_title="Air Quality Dashboard", page_icon="🌍")
 
@@ -56,7 +56,8 @@ page = st.sidebar.radio("Go to", [
     "Latitude and Longitude", 
     "Find Nearest Station",
     "Air Quality Assistant",
-    "NO2 Insights"
+    "NO2 Insights",
+    "NDVI Section"
 ])
 
 # ---------------------------------------------------- linking pages ------------------------------------------------
@@ -66,7 +67,7 @@ if page=="Home":
 elif page == "Visualization Hub":
     visualization_window.show_page()
 elif page == "Prediction Models":
-    lstm_window.show_page()
+    lstm_windoww.show_page()
 elif page == "NO2 Insights":
     no2visualization_window.show_page()
 elif page == "Air Quality Assistant":
@@ -75,6 +76,9 @@ elif page == "Latitude and Longitude":
     map_api_window.show_page()
 elif page == "Find Nearest Station":
     nearest_station_window.show_page()
+elif page == "NDVI Section":
+    ndvi_window.show_page()
+    
      
 # ------------------------------------------------------ background -------------------------------------------------------
 
