@@ -11,7 +11,7 @@ from datetime import datetime
 def show_page():
     # Set the page configuration
     # Title of the app
-    st.image("headerimg2.png", use_container_width=True)
+    st.image("banner.png", use_container_width=True)
     
     st.title("Interactive Air Quality Dashboard")
     
