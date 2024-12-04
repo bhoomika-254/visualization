@@ -7,7 +7,7 @@ import no2visualization_window
 from air_quality_prediction import lstm_windoww
 import nearest_station_window
 import home 
-# import ndvi_window
+import ndvi_window
 # Set page configuration (must be the first Streamlit command)
 st.set_page_config(layout="wide", page_title="Air Quality Dashboard", page_icon="🌍")
 
@@ -76,8 +76,8 @@ elif page == "Latitude and Longitude":
     map_api_window.show_page()
 elif page == "Find Nearest Station":
     nearest_station_window.show_page()
-# elif page == "NDVI Section":
-    # ndvi_window.show_page()
+elif page == "NDVI Section":
+    st.write("in progress")
     
      
 # ------------------------------------------------------ background -------------------------------------------------------
