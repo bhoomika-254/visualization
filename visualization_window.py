@@ -50,7 +50,7 @@ def show_page():
 # ------------------------------------------------------- User interaction ---------------------------------------------------------------------
 
     # Sidebar Filters
-    st.image("headerimg2.png", use_container_width=True)
+    st.image("banner.png", use_container_width=True)
     
     
     st.title("Data Visualization Hub")
