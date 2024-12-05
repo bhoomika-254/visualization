@@ -7,7 +7,9 @@ import no2visualization_window
 from air_quality_prediction import lstm_windoww
 import nearest_station_window
 import home 
-import ndvi_window
+from ndvi import ndvi_window
+import chatbot_window
+
 # Set page configuration (must be the first Streamlit command)
 st.set_page_config(layout="wide", page_title="Air Quality Dashboard", page_icon="🌍")
 
@@ -71,13 +73,13 @@ elif page == "Prediction Models":
 elif page == "NO2 Insights":
     no2visualization_window.show_page()
 elif page == "Air Quality Assistant":
-    webbrowser.open("https://yaksha.streamlit.app/")
+    chatbot_window.show_page()
 elif page == "Latitude and Longitude":
     map_api_window.show_page()
 elif page == "Find Nearest Station":
     nearest_station_window.show_page()
 elif page == "NDVI Section":
-    st.write("in progress")
+    ndvi_window.show_page()
     
      
 # ------------------------------------------------------ background -------------------------------------------------------
